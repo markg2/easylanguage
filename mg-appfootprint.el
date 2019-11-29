@@ -122,6 +122,8 @@ Begin
 			keyPrice = dictBid.Keys[bidIndex - 1].ToString();
 			calcValue = dictBid.Items[keyPrice].ToString();
 			row.Cells[0].Value = calcValue;
+//			row.Cells[0].BackColor = elsystem.drawing.Color.LightCoral;
+			colorForeground(dictBid.Items[keyPrice].ToString(), dictAsk.Items[keyPrice].ToString(), 1, 0, row);
 			row.Cells[1].Value = keyPrice;
 		end;
 
@@ -130,11 +132,31 @@ Begin
 			calcValue = dictAsk.Items[keyPrice].ToString();
 			row.Cells[2].Value = keyPrice;
 			row.Cells[3].Value = calcValue;
+			colorForeground(dictBid.Items[keyPrice].ToString(), dictAsk.Items[keyPrice].ToString(), 0, 3, row);
+//			row.Cells[3].BackColor = elsystem.drawing.Color.LightBlue;
 		end;
 
 		x = x - 1;
 	end;
 
+end;
+
+Method void colorForeground(String strBid, String strAsk, int isBid, int cellIndex, DataGridViewRow row)
+var: 	double quotient, int bid, int ask;
+Begin
+	bid = Strtonum(strBid);
+	ask = Strtonum(strAsk);
+
+	If isBid >= 1 And ask > 0 Then Begin
+		quotient = bid/ask;
+		If quotient > 3 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Red;
+	end;
+
+	If isBid < 1 And bid > 0 Then Begin
+		quotient = ask/bid;
+		If quotient > 3 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Blue;
+	end;
+	
 end;
 
 Method Dictionary process(double argsPrice, int argsSize, Dictionary tsDict, TimeAndSalesItemTickType tickType)

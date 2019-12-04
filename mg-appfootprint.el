@@ -8,7 +8,9 @@ Using tsdata.marketdata;
 
 Input: string iSymbol1( symbol );   { the test symbol }
 
-var: elsystem.windows.forms.Form Form1(NULL), elsystem.windows.forms.DataGridView DataGridView1(NULL);
+var: 	elsystem.windows.forms.Form Form1(NULL), 
+		elsystem.windows.forms.DataGridView DataGridView1(NULL),
+		elsystem.windows.forms.Label Label1(NULL);
 var: TimeAndSalesProvider ts1(NULL),
 	PriceSeriesProvider psp(NULL),
 	IntrabarPersist lastBid(0),
@@ -236,6 +238,7 @@ method override void InitializeComponent()
 begin
 		Form1 = new elsystem.windows.forms.Form();
 		DataGridView1 = new elsystem.windows.forms.DataGridView();
+		Label1 = New elsystem.windows.forms.Label();
 		
 		//---------------------------
 		//form1
@@ -254,13 +257,22 @@ begin
 		Form1.Font = elsystem.drawing.Font.Create("Microsoft Sans Serif", 8.25, 0);
 		Form1.ControlLocation.X = 574;
 		Form1.ControlLocation.Y = 0;
-		Form1.Controls.Add( DataGridView1 );
+//		Form1.Controls.Add( Label1 );
+//		Form1.Controls.Add( DataGridView1 );
+//		Form1.AddControl(Label1);
+		Form1.AddControl(DataGridView1);
 		Form1.RightToLeft = elsystem.windows.forms.RightToLeft.No;
 		Form1.Name = "Form1";
+
+		// Summary
+		Label1.BackColor = elsystem.drawing.Color.Red;
+		Label1.Location(0, 0);
+		
 		
 		//---------------------------
 		//datagridview1
 		//---------------------------
+		DataGridView1.Location(0, 300);
 		DataGridView1.GridColor = elsystem.drawing.Color.FromArgb(160, 160, 160);
 		DataGridView1.BorderStyle = elsystem.windows.forms.BorderStyle.FixedSingle;
 		DataGridView1.GradientMode = elsystem.windows.forms.LinearGradientMode.ForwardDiagonal;
@@ -311,10 +323,12 @@ begin
 		DataGridView1.ForeColor = elsystem.drawing.Color.Black;
 		DataGridView1.Margin = new elsystem.windows.forms.Padding( 3, 3, 3, 3 );
 		DataGridView1.Font = elsystem.drawing.Font.Create("Microsoft Sans Serif", 8.25, 0);
-		DataGridView1.ControlLocation.X = 0;
-		DataGridView1.ControlLocation.Y = 0;
+//		DataGridView1.ControlLocation.X = 0;
+//		DataGridView1.ControlLocation.Y = 0;
 		DataGridView1.RightToLeft = elsystem.windows.forms.RightToLeft.No;
 		DataGridView1.Name = "DataGridView1";
+		
+
 		
 		//---------------------------
 		//analysistechnique

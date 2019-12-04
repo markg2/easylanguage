@@ -1,0 +1,2 @@
+# easylanguage
+EasyLanguage Scripts

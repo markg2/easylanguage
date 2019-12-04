@@ -1,4 +1,3 @@
-
 Using elsystem;
 Using elsystem.collections;
 Using elsystem.windows.forms;
@@ -152,11 +151,17 @@ Begin
 	If isBid >= 1 And ask > 0 Then Begin
 		quotient = bid/ask;
 		If quotient > 3 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Red;
+	end 
+	else if isBid >= 1 and  bid >=300 then begin
+		row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Red;
 	end;
 
 	If isBid < 1 And bid > 0 Then Begin
 		quotient = ask/bid;
 		If quotient > 3 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Blue;
+	end 
+	else if isBid < 1 and ask >=300 then begin
+		row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Blue;
 	end;
 	
 end;
@@ -265,8 +270,8 @@ begin
 		Form1.Name = "Form1";
 
 		// Summary
-		Label1.BackColor = elsystem.drawing.Color.Red;
-		Label1.Location(0, 0);
+//		Label1.BackColor = elsystem.drawing.Color.Red;
+//		Label1.Location(0, 0);
 		
 		
 		//---------------------------

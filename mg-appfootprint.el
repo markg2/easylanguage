@@ -8,6 +8,9 @@ Using tsdata.marketdata;
 Input: string iSymbol1( symbol );   { the test symbol }
 
 var: 	elsystem.windows.forms.Form Form1(NULL), 
+		elsystem.windows.forms.Panel PanelHeader(NULL),
+		elsystem.windows.forms.Panel PanelBody(NULL),
+		elsystem.windows.forms.Panel PanelFooter(NULL),
 		elsystem.windows.forms.DataGridView DataGridView1(NULL),
 		elsystem.windows.forms.Label Label1(NULL);
 var: TimeAndSalesProvider ts1(NULL),
@@ -206,6 +209,7 @@ begin
 				end;
 				If price = lastAsk Then begin
 					askCumulative = askCumulative + args.Data.Size;
+		Label1.Text = askCumulative.ToString();
 					process(args.Data.Price, args.Data.Size, dictAsk,  TimeAndSalesItemTickType.Ask);
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
 				end;
@@ -219,7 +223,6 @@ begin
 		Else if type = TimeAndSalesItemTickType.Bid Then Begin
 			lastBid = price;
 		end;
-
 	end ;
 end;
 
@@ -243,7 +246,13 @@ method override void InitializeComponent()
 begin
 		Form1 = new elsystem.windows.forms.Form();
 		DataGridView1 = new elsystem.windows.forms.DataGridView();
-		Label1 = New elsystem.windows.forms.Label();
+		Label1 = elsystem.windows.forms.Label.Create("bid/ask VOL", 100, 20);
+		PanelHeader = elsystem.windows.forms.Panel.Create(400, 20);
+		PanelBody = elsystem.windows.forms.Panel.Create(400, 600);
+		PanelFooter = elsystem.windows.forms.Panel.Create(400, 20);
+
+		PanelHeader.AddControl(Label1);		
+		PanelBody.AddControl(DataGridView1);
 		
 		//---------------------------
 		//form1
@@ -262,16 +271,17 @@ begin
 		Form1.Font = elsystem.drawing.Font.Create("Microsoft Sans Serif", 8.25, 0);
 		Form1.ControlLocation.X = 574;
 		Form1.ControlLocation.Y = 0;
-//		Form1.Controls.Add( Label1 );
-//		Form1.Controls.Add( DataGridView1 );
-//		Form1.AddControl(Label1);
-		Form1.AddControl(DataGridView1);
+		Form1.Controls.Add(PanelHeader);
+		Form1.Controls.Add(PanelBody);
 		Form1.RightToLeft = elsystem.windows.forms.RightToLeft.No;
 		Form1.Name = "Form1";
 
+		PanelHeader.Location(0,0);
+		PanelBody.Location(0, 50);
+
 		// Summary
-//		Label1.BackColor = elsystem.drawing.Color.Red;
-//		Label1.Location(0, 0);
+		Label1.BackColor = elsystem.drawing.Color.Red;
+		Label1.Location(0, 0);
 		
 		
 		//---------------------------
@@ -329,7 +339,7 @@ begin
 		DataGridView1.Margin = new elsystem.windows.forms.Padding( 3, 3, 3, 3 );
 		DataGridView1.Font = elsystem.drawing.Font.Create("Microsoft Sans Serif", 8.25, 0);
 //		DataGridView1.ControlLocation.X = 0;
-//		DataGridView1.ControlLocation.Y = 0;
+//		DataGridView1.ControlLocation.Y = 100;
 		DataGridView1.RightToLeft = elsystem.windows.forms.RightToLeft.No;
 		DataGridView1.Name = "DataGridView1";
 		

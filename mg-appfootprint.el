@@ -19,8 +19,8 @@ var: TimeAndSalesProvider ts1(NULL),
 	IntrabarPersist lastAsk(0),
 	Dictionary dictBid(null),
 	Dictionary dictAsk(null),
-	int bidCumulative(0),
-	int askCumulative(0);
+	IntrabarPersist int bidCumulative(0),
+	IntrabarPersist int askCumulative(0);
 
 
 // sample app is initializing
@@ -209,7 +209,6 @@ begin
 				end;
 				If price = lastAsk Then begin
 					askCumulative = askCumulative + args.Data.Size;
-		Label1.Text = askCumulative.ToString();
 					process(args.Data.Price, args.Data.Size, dictAsk,  TimeAndSalesItemTickType.Ask);
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
 				end;
@@ -223,6 +222,17 @@ begin
 		Else if type = TimeAndSalesItemTickType.Bid Then Begin
 			lastBid = price;
 		end;
+		
+		if bidCumulative > askCumulative then begin
+			Label1.BackColor = elsystem.drawing.Color.Red;
+			Label1.Text = Numtostr(bidCumulative - askCumulative, 0);
+		end
+		else Begin
+			Label1.BackColor = elsystem.drawing.Color.Blue;
+			Label1.Text = Numtostr(askCumulative - bidCumulative, 0);
+		
+		end;
+
 	end ;
 end;
 
@@ -280,7 +290,6 @@ begin
 		PanelBody.Location(0, 50);
 
 		// Summary
-		Label1.BackColor = elsystem.drawing.Color.Red;
 		Label1.Location(0, 0);
 		
 		

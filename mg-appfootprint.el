@@ -225,10 +225,12 @@ begin
 		
 		if bidCumulative > askCumulative then begin
 			Label1.BackColor = elsystem.drawing.Color.Red;
+			Label1.ForeColor = elsystem.drawing.Color.White;
 			Label1.Text = Numtostr(bidCumulative - askCumulative, 0);
 		end
 		else Begin
-			Label1.BackColor = elsystem.drawing.Color.Blue;
+			Label1.BackColor = elsystem.drawing.Color.LightBlue;
+			Label1.ForeColor = elsystem.drawing.Color.Black;
 			Label1.Text = Numtostr(askCumulative - bidCumulative, 0);
 		
 		end;
@@ -286,8 +288,8 @@ begin
 		Form1.RightToLeft = elsystem.windows.forms.RightToLeft.No;
 		Form1.Name = "Form1";
 
-		PanelHeader.Location(0,0);
-		PanelBody.Location(0, 50);
+		PanelHeader.Location(150,10);
+		PanelBody.Location(0, 40);
 
 		// Summary
 		Label1.Location(0, 0);

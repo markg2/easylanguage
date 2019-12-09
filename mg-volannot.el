@@ -87,14 +87,14 @@ Method void plotVolume(int bidC, int askC, double strike)
 Begin
 	
 	if bidC > askC then begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .1), numtostr(bidC - askC, 0));
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .3), numtostr(bidC - askC, 0));
 //		myText.Font = annotFont;
 		myText.Color = Color.Red;
 		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(myText);	// draws the text on the chart
 	end
 	else Begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .1), numtostr(askC - bidC, 0));
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .3), numtostr(askC - bidC, 0));
 //		myText.Font = annotFont;
 		myText.Color = Color.LightBlue;
 		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
@@ -107,7 +107,7 @@ method void psp_updated( elsystem.Object sender, tsdata.marketdata.PriceSeriesUp
 begin
 	If args.Reason = PriceSeriesUpdateReason.BarClose Then
 	Begin
-		plotVolume(bidCumulative, askCumulative, 270.2);		
+		plotVolume(bidCumulative, askCumulative, H);		
 
 		dictAsk.Clear();
 		dictBid.Clear();

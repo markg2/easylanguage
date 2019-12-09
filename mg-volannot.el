@@ -1,3 +1,4 @@
+
 Using elsystem;
 Using elsystem.collections;
 Using elsystem.drawing;
@@ -61,11 +62,13 @@ begin
 					bidCumulative = bidCumulative + args.Data.Size;
 					process(args.Data.Price, args.Data.Size, dictBid, TimeAndSalesItemTickType.Bid);
 					process(args.Data.Price, 0, dictAsk, TimeAndSalesItemTickType.Bid);
+					plotVolume(bidCumulative, askCumulative, H);
 				end;
 				If price = lastAsk Then begin
 					askCumulative = askCumulative + args.Data.Size;
 					process(args.Data.Price, args.Data.Size, dictAsk,  TimeAndSalesItemTickType.Ask);
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
+					plotVolume(bidCumulative, askCumulative, H);		
 				end;
 			end;
 		end
@@ -76,22 +79,24 @@ begin
 			lastBid = price;
 		end;
 		
-		if bidCumulative > askCumulative then begin
-		{
-			Label1.BackColor = elsystem.drawing.Color.Red;
-			Label1.ForeColor = elsystem.drawing.Color.White;
-			Label1.Text = Numtostr(bidCumulative - askCumulative, 0);
-			}
-		end
-		else Begin
-		{
-			Label1.BackColor = elsystem.drawing.Color.LightBlue;
-			Label1.ForeColor = elsystem.drawing.Color.Black;
-			Label1.Text = Numtostr(askCumulative - bidCumulative, 0);
-		}
-		end;
-
 	end ;
+end;
+
+Method void plotVolume(int bidC, int askC, double strike)
+Begin
+	if bidC > askC then begin
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .1), numtostr(bidC - askC, 0));
+		myText.Color = Color.Red;
+		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
+		DrawingObjects.Add(myText);	// draws the text on the chart
+	end
+	else Begin
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .1), numtostr(askC - bidC, 0));
+		myText.Color = Color.Blue;
+		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
+		DrawingObjects.Add(myText);	// draws the text on the chart
+	end;
+		
 end;
 
 method void psp_updated( elsystem.Object sender, tsdata.marketdata.PriceSeriesUpdatedEventArgs args ) 
@@ -146,7 +151,6 @@ begin
 		
 	end;
 end;
-
 
 method override void InitializeComponent()
 begin

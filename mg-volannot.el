@@ -87,14 +87,14 @@ Method void plotVolume(int bidC, int askC, double hStrike, double lStrike)
 Begin
 	
 	if bidC > askC then begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, lStrike - .3), numtostr(bidC - askC, 0));
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), numtostr(bidC - askC, 0));
 //		myText.Font = annotFont;
 		myText.Color = Color.Red;
 		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(myText);	// draws the text on the chart
 	end
 	else Begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, hStrike + .3), numtostr(askC - bidC, 0));
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(askC - bidC, 0));
 //		myText.Font = annotFont;
 		myText.Color = Color.LightBlue;
 		myText.Persist = true;		// persist keeps the text label on the chart between tick updates

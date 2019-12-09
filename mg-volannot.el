@@ -17,7 +17,8 @@ var:
 	charting.ChartingHost ChartingHost1(NULL),
 	TimeAndSalesProvider ts1(NULL),
 	PriceSeriesProvider psp(NULL),
-	TextLabel myText(null),		// declares a textlabel drawing object
+	TextLabel myText(null),
+	Font annotFont(null),
 	IntrabarPersist lastBid(0),
 	IntrabarPersist lastAsk(0),
 	Dictionary dictBid(null),
@@ -61,14 +62,14 @@ begin
 				If price = lastBid Then begin
 					bidCumulative = bidCumulative + args.Data.Size;
 					process(args.Data.Price, args.Data.Size, dictBid, TimeAndSalesItemTickType.Bid);
-					process(args.Data.Price, 0, dictAsk, TimeAndSalesItemTickType.Bid);
-					plotVolume(bidCumulative, askCumulative, H);
+			 		process(args.Data.Price, 0, dictAsk, TimeAndSalesItemTickType.Bid);
+					//plotVolume(bidCumulative, askCumulative, H);
 				end;
 				If price = lastAsk Then begin
 					askCumulative = askCumulative + args.Data.Size;
 					process(args.Data.Price, args.Data.Size, dictAsk,  TimeAndSalesItemTickType.Ask);
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
-					plotVolume(bidCumulative, askCumulative, H);		
+					//plotVolume(bidCumulative, askCumulative, H);		
 				end;
 			end;
 		end
@@ -79,20 +80,24 @@ begin
 			lastBid = price;
 		end;
 		
+		
 	end ;
 end;
 
 Method void plotVolume(int bidC, int askC, double strike)
 Begin
+	
 	if bidC > askC then begin
 		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .1), numtostr(bidC - askC, 0));
+//		myText.Font = annotFont;
 		myText.Color = Color.Red;
 		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(myText);	// draws the text on the chart
 	end
 	else Begin
 		myText = TextLabel.Create(BNPoint.Create(BarNumber, strike + .1), numtostr(askC - bidC, 0));
-		myText.Color = Color.Blue;
+//		myText.Font = annotFont;
+		myText.Color = Color.LightBlue;
 		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(myText);	// draws the text on the chart
 	end;
@@ -103,6 +108,8 @@ method void psp_updated( elsystem.Object sender, tsdata.marketdata.PriceSeriesUp
 begin
 	If args.Reason = PriceSeriesUpdateReason.BarClose Then
 	Begin
+		plotVolume(bidCumulative, askCumulative, 270.2);		
+
 		dictAsk.Clear();
 		dictBid.Clear();
 		askCumulative = 0;
@@ -131,25 +138,6 @@ end;
 { plots a rectangle containing a text label near the upper right corner of a chart }
 Method void PlotLabel(int ChartWidth, int ChartHeight) 
 begin
-	
-	{create the rectangle and text drawing objects if they don't exist}
-	If myText=null then begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, 270.8),"999");
-		myText.Color = Color.White;
-		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
-		DrawingObjects.Add(myText);	// draws the text on the chart
-
-		myText = TextLabel.Create(BNPoint.Create(BarNumber-1, 270.8),"888");
-		DrawingObjects.Add(myText);	// draws the text on the chart
-
-		myText = TextLabel.Create(BNPoint.Create(BarNumber-2, 270.8),"777");
-		DrawingObjects.Add(myText);	// draws the text on the chart
-
-	end Else begin
-		{udpates the X,Y coordinates for an existing rectangle and text}
-		myText.PointValue=BNPoint.Create(BarNumber, 270);
-		
-	end;
 end;
 
 method override void InitializeComponent()
@@ -170,6 +158,8 @@ begin
 		//--------------------------------------------
 		ChartingHost1.oninitialupdate += chartinghost1_oninitialupdate;
 		ChartingHost1.onsize += chartinghost1_onsize;
+		
+		annotFont = Font.Create("Arial", 10);
 
 	psp = new PriceSeriesProvider;
 	psp.Interval.ChartType = tsdata.marketdata.DataChartType.Bars;
@@ -214,8 +204,5 @@ end;
 method void AnalysisTechnique_Initialized( elsystem.Object sender, elsystem.InitializedEventArgs args ) 
 begin
 end;
-
-{updates the text string on every tick}
-If myText<>null then myText.TextString = "333";
 
 

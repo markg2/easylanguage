@@ -14,7 +14,6 @@ Using elsystem.drawing;
 Input: string iSymbol1( symbol );   { the test symbol }
 
 var: 
-	charting.ChartingHost ChartingHost1(NULL),
 	TimeAndSalesProvider ts1(NULL),
 	PriceSeriesProvider psp(NULL),
 	TextLabel myText(null),
@@ -122,44 +121,10 @@ begin
 
 end;
 
-{ plots the text rectangle when the chart window is initialized }
-method void ChartingHost1_OnInitialUpdate( elsystem.Object sender, charting.OnInitialUpdateEventArgs args ) 
-var: int bc;
-begin
-	PlotLabel(args.width,args.height);  // plots the text rectangle
-end;
-
-{ updates the text rectangle when the chart is resizsed }
-method void ChartingHost1_OnSize( elsystem.Object sender, charting.OnSizeEventArgs args ) 
-begin
-	PlotLabel(args.width,args.height); // plots the text rectangle	
-end;
-
-{ plots a rectangle containing a text label near the upper right corner of a chart }
-Method void PlotLabel(int ChartWidth, int ChartHeight) 
-begin
-end;
-
 method override void InitializeComponent()
 begin
-		ChartingHost1 = new charting.ChartingHost;
 		
-		//---------------------------
-		//chartinghost1
-		//---------------------------
-		ChartingHost1.Name = "ChartingHost1";
-		
-		//---------------------------
-		//analysistechnique
-		//---------------------------
-		
-		//--------------------------------------------
-		//                  Events
-		//--------------------------------------------
-		ChartingHost1.oninitialupdate += chartinghost1_oninitialupdate;
-		ChartingHost1.onsize += chartinghost1_onsize;
-		
-		annotFont = Font.Create("Arial", 10);
+	annotFont = Font.Create("Arial", 10);
 
 	psp = new PriceSeriesProvider;
 	psp.Interval.ChartType = tsdata.marketdata.DataChartType.Bars;

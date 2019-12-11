@@ -62,13 +62,11 @@ begin
 					bidCumulative = bidCumulative + args.Data.Size;
 					process(args.Data.Price, args.Data.Size, dictBid, TimeAndSalesItemTickType.Bid);
 			 		process(args.Data.Price, 0, dictAsk, TimeAndSalesItemTickType.Bid);
-					//plotVolume(bidCumulative, askCumulative, H);
 				end;
 				If price = lastAsk Then begin
 					askCumulative = askCumulative + args.Data.Size;
 					process(args.Data.Price, args.Data.Size, dictAsk,  TimeAndSalesItemTickType.Ask);
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
-					//plotVolume(bidCumulative, askCumulative, H);		
 				end;
 			end;
 		end
@@ -103,11 +101,36 @@ Begin
 		
 end;
 
+Method void plotVolumeX(int bidC, int askC, double hStrike, double lStrike)
+var: double bidAskRatio;
+
+Begin
+	bidAskRatio = 0.1;
+	
+	if bidC > askC then begin
+		if askC > 0 then bidAskRatio = bidC / askC;
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), numtostr(bidAskRatio, 1));
+//		myText.Font = annotFont;
+		myText.Color = Color.Red;
+		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
+		DrawingObjects.Add(myText);	// draws the text on the chart
+	end
+	else Begin
+		if bidC > 0 then bidAskRatio = askC / bidC;
+		myText = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(bidAskRatio, 1));
+//		myText.Font = annotFont;
+		myText.Color = Color.LightBlue;
+		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
+		DrawingObjects.Add(myText);	// draws the text on the chart
+	end;
+		
+end;
+
 method void psp_updated( elsystem.Object sender, tsdata.marketdata.PriceSeriesUpdatedEventArgs args ) 
 begin
 	If args.Reason = PriceSeriesUpdateReason.BarClose Then
 	Begin
-		plotVolume(bidCumulative, askCumulative, H, L);		
+		plotVolumeX(bidCumulative, askCumulative, H, L);		
 
 		dictAsk.Clear();
 		dictBid.Clear();

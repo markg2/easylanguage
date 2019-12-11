@@ -192,7 +192,8 @@ Begin
 end;
 
 method void ts1_updated( elsystem.Object sender, TimeAndSalesUpdatedEventArgs args ) 
-Var: int type, double price;
+Var: int type, double price, double bidAskRatio;
+
 begin
 	If args.Reason = TimeAndSalesUpdateReason.Added Then
 	begin
@@ -223,16 +224,20 @@ begin
 			lastBid = price;
 		end;
 		
+		bidAskRatio = 0.1;
 		if bidCumulative > askCumulative then begin
+			if askCumulative > 0 then bidAskRatio = bidCumulative/askCumulative;
 			Label1.BackColor = elsystem.drawing.Color.Red;
 			Label1.ForeColor = elsystem.drawing.Color.White;
-			Label1.Text = Numtostr(bidCumulative - askCumulative, 0);
+			Label1.Text = Numtostr(bidAskRatio, 1) + " (" + Numtostr(bidCumulative-askCumulative, 0) + ")";
+//			Label1.Text = Numtostr(bidAskRatio, 1);
 		end
 		else Begin
+			if bidCumulative > 0 then bidAskRatio = askCumulative/bidCumulative;
 			Label1.BackColor = elsystem.drawing.Color.LightBlue;
 			Label1.ForeColor = elsystem.drawing.Color.Black;
-			Label1.Text = Numtostr(askCumulative - bidCumulative, 0);
-		
+			Label1.Text = Numtostr(bidAskRatio, 1) + " (" + Numtostr(askCumulative-bidCumulative, 0) + ")";
+//			Label1.Text = Numtostr(bidAskRatio, 1);
 		end;
 
 	end ;

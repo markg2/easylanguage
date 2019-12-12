@@ -313,7 +313,7 @@ begin
 		DataGridView1.GridColor = elsystem.drawing.Color.FromArgb(160, 160, 160);
 		DataGridView1.BorderStyle = elsystem.windows.forms.BorderStyle.FixedSingle;
 		DataGridView1.GradientMode = elsystem.windows.forms.LinearGradientMode.ForwardDiagonal;
-		DataGridView1.ColumnHeadersHeight = 23;
+		DataGridView1.ColumnHeadersHeight = 40;
 		DataGridView1.RowHeadersWidth = 41;
 		DataGridView1.RowHeadersVisible = true;
 		DataGridView1.RowHeadersFont = elsystem.drawing.Font.Create("Microsoft Sans Serif", 8.25, 0);

@@ -229,15 +229,21 @@ begin
 			if askCumulative > 0 then bidAskRatio = bidCumulative/askCumulative;
 			Label1.BackColor = elsystem.drawing.Color.Red;
 			Label1.ForeColor = elsystem.drawing.Color.White;
-			Label1.Text = Numtostr(bidAskRatio, 1) + " (" + Numtostr(bidCumulative-askCumulative, 0) + ")";
-//			Label1.Text = Numtostr(bidAskRatio, 1);
+			Label1.Text = Numtostr(bidAskRatio, 1) + 
+				" (" + Numtostr(bidCumulative - askCumulative, 0) +": " + 
+				Numtostr(bidCumulative, 0) + "/" +
+				Numtostr(askCumulative, 0) +
+				") {ratio: (diff: bid/ask)}";
 		end
 		else Begin
 			if bidCumulative > 0 then bidAskRatio = askCumulative/bidCumulative;
 			Label1.BackColor = elsystem.drawing.Color.LightBlue;
 			Label1.ForeColor = elsystem.drawing.Color.Black;
-			Label1.Text = Numtostr(bidAskRatio, 1) + " (" + Numtostr(askCumulative-bidCumulative, 0) + ")";
-//			Label1.Text = Numtostr(bidAskRatio, 1);
+			Label1.Text = Numtostr(bidAskRatio, 1) + {ratio: (diff: bid/ask)}
+			" (" + Numtostr(askCumulative - bidCumulative, 0) + ": " + 
+			Numtostr(bidCumulative, 0) + "/" +
+			Numtostr(askCumulative, 0) +
+			") {ratio: (diff: bid/ask)}";
 		end;
 
 	end ;
@@ -263,7 +269,7 @@ method override void InitializeComponent()
 begin
 		Form1 = new elsystem.windows.forms.Form();
 		DataGridView1 = new elsystem.windows.forms.DataGridView();
-		Label1 = elsystem.windows.forms.Label.Create("bid/ask VOL", 100, 20);
+		Label1 = elsystem.windows.forms.Label.Create("bid/ask VOL", 300, 20);
 		PanelHeader = elsystem.windows.forms.Panel.Create(400, 20);
 		PanelBody = elsystem.windows.forms.Panel.Create(400, 600);
 		PanelFooter = elsystem.windows.forms.Panel.Create(400, 20);
@@ -293,7 +299,7 @@ begin
 		Form1.RightToLeft = elsystem.windows.forms.RightToLeft.No;
 		Form1.Name = "Form1";
 
-		PanelHeader.Location(150,10);
+		PanelHeader.Location(0,10);
 		PanelBody.Location(0, 40);
 
 		// Summary

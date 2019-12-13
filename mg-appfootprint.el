@@ -22,7 +22,7 @@ var: TimeAndSalesProvider ts1(NULL),
 	IntrabarPersist int bidCumulative(0),
 	IntrabarPersist int askCumulative(0),
 	IntrabarPersist int pocVolHigh(0),
-	IntrabarPersist int pocIndex(0); 
+	IntrabarPersist int pocIndex(1); 
 	
 
 
@@ -114,7 +114,7 @@ end;
 
 Method void showAll(Dictionary dictBid, Dictionary dictAsk)
 var: 		DataGridViewRow row, string keyPrice, string calcValue,
-		string calcValue2, string calcValue3,
+		string calcValue2,
 		int bidCount, int askCount, int highestCount,
 		int x, int bidIndex, int askIndex,
 		int pocVolTemp;
@@ -131,7 +131,6 @@ Begin
 	while x >= 0 Begin
 		calcValue = "0";
 		calcValue2 = "0";
-		calcValue3 = "0";
 		row = DataGridViewRow.Create("");
 		DataGridView1.Rows.Add(row);	
 		bidIndex = x + 1;
@@ -154,23 +153,21 @@ Begin
 		end;
 
 		// point of control
-		If bidIndex <= dictAsk.Count And bidIndex > 0 Then Begin
-			keyPrice = dictAsk.Keys[bidIndex - 1].ToString();
-			calcValue3 = dictAsk.Items[keyPrice].ToString();
-		end;
 		pocVolTemp = Strtonum(calcValue) + Strtonum(calcValue2);
 		if pocVolTemp > pocVolHigh then Begin
-		 	pocIndex = askIndex;
+		 	pocIndex = DataGridView1.Rows.Count;
 	 		pocVolHigh = pocVolTemp;
+	 		pocVolTemp = 0;
 		end;
 
 		x = x - 1;
 	end;
 	
 	// display point of control
-	if pocIndex > 0 then row = DataGridView1.Rows.at(pocIndex - 1);
-	if pocIndex = 0 then row = DataGridView1.Rows.at(0);
-	row.Cells[4].Value = "#";
+	if pocIndex < DataGridView1.Rows.CountTotal and pocIndex > 0 then begin
+		row = DataGridView1.Rows.at(pocIndex);
+		row.Cells[4].Value = "#";
+	end;
 	
 
 end;
@@ -244,6 +241,7 @@ begin
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
 				end;
 				DataGridView1.Rows.Clear();	
+				pocVolHigh = 0;  // TODO FUTURE this is a hack to make it work better
 				showAll(dictBid, dictAsk);
 			end;
 		end
@@ -288,7 +286,7 @@ begin
 		askCumulative = 0;
 		bidCumulative = 0;
 		pocVolHigh = 0;
-		pocIndex = 0;
+		pocIndex = 1;
 
 	end;
 end;

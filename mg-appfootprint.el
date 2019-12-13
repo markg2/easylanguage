@@ -20,7 +20,11 @@ var: TimeAndSalesProvider ts1(NULL),
 	Dictionary dictBid(null),
 	Dictionary dictAsk(null),
 	IntrabarPersist int bidCumulative(0),
-	IntrabarPersist int askCumulative(0);
+	IntrabarPersist int askCumulative(0),
+	IntrabarPersist int pocVolHigh(0),
+	IntrabarPersist int pocIndex(0); 
+	
+
 
 
 // sample app is initializing
@@ -57,6 +61,11 @@ Begin
 	col = DataGridViewColumn.Create("aVol");
 	col.SortMode = DataGridViewColumnSortMode.Automatic;
 	col.ReadOnly = True;
+	DataGridView1.Columns.Add(col);
+	
+	col = DataGridViewColumn.Create("poc");
+	col.SortMode = DataGridViewColumnSortMode.Automatic;	
+	col.ReadOnly = True;	
 	DataGridView1.Columns.Add(col);
 	
 End;
@@ -105,18 +114,24 @@ end;
 
 Method void showAll(Dictionary dictBid, Dictionary dictAsk)
 var: 		DataGridViewRow row, string keyPrice, string calcValue,
+		string calcValue2, string calcValue3,
 		int bidCount, int askCount, int highestCount,
-		int x, int bidIndex, int askIndex;
+		int x, int bidIndex, int askIndex,
+		int pocVolTemp;
 
 Begin
 	bidCount = dictBid.Count;
 	askCount = dictAsk.Count;
 	highestCount = askCount;
-	x = highestCount;
+	pocVolTemp = 0;
 	
 	If bidCount > askCount Then highestCount = bidCount;
+	x = highestCount;
 	
 	while x >= 0 Begin
+		calcValue = "0";
+		calcValue2 = "0";
+		calcValue3 = "0";
 		row = DataGridViewRow.Create("");
 		DataGridView1.Rows.Add(row);	
 		bidIndex = x + 1;
@@ -126,22 +141,37 @@ Begin
 			keyPrice = dictBid.Keys[bidIndex - 1].ToString();
 			calcValue = dictBid.Items[keyPrice].ToString();
 			row.Cells[0].Value = calcValue;
-//			row.Cells[0].BackColor = elsystem.drawing.Color.LightCoral;
 			colorForeground(dictBid.Items[keyPrice].ToString(), dictAsk.Items[keyPrice].ToString(), 1, 0, row);
 			row.Cells[1].Value = keyPrice;
 		end;
 
 		If askIndex <= dictAsk.Count And askIndex > 0 Then Begin
 			keyPrice = dictAsk.Keys[askIndex - 1].ToString();
-			calcValue = dictAsk.Items[keyPrice].ToString();
+			calcValue2 = dictAsk.Items[keyPrice].ToString();
 			row.Cells[2].Value = keyPrice;
-			row.Cells[3].Value = calcValue;
+			row.Cells[3].Value = calcValue2;
 			colorForeground(dictBid.Items[keyPrice].ToString(), dictAsk.Items[keyPrice].ToString(), 0, 3, row);
-//			row.Cells[3].BackColor = elsystem.drawing.Color.LightBlue;
+		end;
+
+		// point of control
+		If bidIndex <= dictAsk.Count And bidIndex > 0 Then Begin
+			keyPrice = dictAsk.Keys[bidIndex - 1].ToString();
+			calcValue3 = dictAsk.Items[keyPrice].ToString();
+		end;
+		pocVolTemp = Strtonum(calcValue) + Strtonum(calcValue2);
+		if pocVolTemp > pocVolHigh then Begin
+		 	pocIndex = askIndex;
+	 		pocVolHigh = pocVolTemp;
 		end;
 
 		x = x - 1;
 	end;
+	
+	// display point of control
+	if pocIndex > 0 then row = DataGridView1.Rows.at(pocIndex - 1);
+	if pocIndex = 0 then row = DataGridView1.Rows.at(0);
+	row.Cells[4].Value = "#";
+	
 
 end;
 
@@ -153,17 +183,17 @@ Begin
 
 	If isBid >= 1 And ask > 0 Then Begin
 		quotient = bid/ask;
-		If quotient > 3 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Red;
+		If quotient > 4 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Red;
 	end 
-	else if isBid >= 1 and  bid >=300 then begin
+	else if isBid >= 1 and  bid >=400 then begin
 		row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Red;
 	end;
 
 	If isBid < 1 And bid > 0 Then Begin
 		quotient = ask/bid;
-		If quotient > 3 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Blue;
+		If quotient > 4 Then row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Blue;
 	end 
-	else if isBid < 1 and ask >=300 then begin
+	else if isBid < 1 and ask >=400 then begin
 		row.Cells[cellIndex].ForeColor = elsystem.drawing.Color.Blue;
 	end;
 	
@@ -229,21 +259,21 @@ begin
 			if askCumulative > 0 then bidAskRatio = bidCumulative/askCumulative;
 			Label1.BackColor = elsystem.drawing.Color.Red;
 			Label1.ForeColor = elsystem.drawing.Color.White;
-			Label1.Text = Numtostr(bidAskRatio, 1) + 
+			Label1.Text = "" + 
 				" (" + Numtostr(bidCumulative - askCumulative, 0) +": " + 
 				Numtostr(bidCumulative, 0) + "/" +
 				Numtostr(askCumulative, 0) +
-				") {ratio: (diff: bid/ask)}";
+				") ";
 		end
 		else Begin
 			if bidCumulative > 0 then bidAskRatio = askCumulative/bidCumulative;
 			Label1.BackColor = elsystem.drawing.Color.LightBlue;
 			Label1.ForeColor = elsystem.drawing.Color.Black;
-			Label1.Text = Numtostr(bidAskRatio, 1) + {ratio: (diff: bid/ask)}
+			Label1.Text = "" + 
 			" (" + Numtostr(askCumulative - bidCumulative, 0) + ": " + 
 			Numtostr(bidCumulative, 0) + "/" +
 			Numtostr(askCumulative, 0) +
-			") {ratio: (diff: bid/ask)}";
+			") ";
 		end;
 
 	end ;
@@ -257,6 +287,9 @@ begin
 		dictBid.Clear();
 		askCumulative = 0;
 		bidCumulative = 0;
+		pocVolHigh = 0;
+		pocIndex = 0;
+
 	end;
 end;
 

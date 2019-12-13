@@ -16,7 +16,8 @@ Input: string iSymbol1( symbol );   { the test symbol }
 var: 
 	TimeAndSalesProvider ts1(NULL),
 	PriceSeriesProvider psp(NULL),
-	TextLabel myText(null),
+	TextLabel tBid(null),
+	TextLabel tAsk(null),
 	Font annotFont(null),
 	IntrabarPersist lastBid(0),
 	IntrabarPersist lastAsk(0),
@@ -85,43 +86,25 @@ Method void plotVolume(int bidC, int askC, double hStrike, double lStrike)
 Begin
 	
 	if bidC > askC then begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), numtostr(bidC - askC, 0));
-//		myText.Font = annotFont;
-		myText.Color = Color.Red;
-		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
-		DrawingObjects.Add(myText);	// draws the text on the chart
-	end
-	else Begin
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(askC - bidC, 0));
-//		myText.Font = annotFont;
-		myText.Color = Color.LightBlue;
-		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
-		DrawingObjects.Add(myText);	// draws the text on the chart
-	end;
+		tBid = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), "-" + numtostr(bidC - askC, 0));
+		tBid.Color = Color.Red;
+		tBid.Persist = true;		// persist keeps the text label on the chart between tick updates
+		DrawingObjects.Add(tBid);	// draws the text on the chart
+		tAsk =  TextLabel.Create(BNPoint.Create(BarNumber, hStrike), "0x0");
+		tAsk.Color = Color.Red;
+		tAsk.Persist = true;
+		DrawingObjects.Add(tAsk);
 		
-end;
-
-Method void plotVolumeX(int bidC, int askC, double hStrike, double lStrike)
-var: double bidAskRatio;
-
-Begin
-	bidAskRatio = 0.1;
-	
-	if bidC > askC then begin
-		if askC > 0 then bidAskRatio = bidC / askC;
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), numtostr(bidAskRatio, 1));
-//		myText.Font = annotFont;
-		myText.Color = Color.Red;
-		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
-		DrawingObjects.Add(myText);	// draws the text on the chart
 	end
 	else Begin
-		if bidC > 0 then bidAskRatio = askC / bidC;
-		myText = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(bidAskRatio, 1));
-//		myText.Font = annotFont;
-		myText.Color = Color.LightBlue;
-		myText.Persist = true;		// persist keeps the text label on the chart between tick updates
-		DrawingObjects.Add(myText);	// draws the text on the chart
+		tAsk = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(askC - bidC, 0));
+		tAsk.Color = Color.LightBlue;
+		tAsk.Persist = true;		// persist keeps the text label on the chart between tick updates
+		DrawingObjects.Add(tAsk);	// draws the text on the chart
+		tBid =  TextLabel.Create(BNPoint.Create(BarNumber, lStrike), "0x0");
+		tBid.Color = Color.LightBlue;
+		tBid.Persist = true;
+		DrawingObjects.Add(tBid);
 	end;
 		
 end;
@@ -130,7 +113,7 @@ method void psp_updated( elsystem.Object sender, tsdata.marketdata.PriceSeriesUp
 begin
 	If args.Reason = PriceSeriesUpdateReason.BarClose Then
 	Begin
-		plotVolumeX(bidCumulative, askCumulative, H, L);		
+		plotVolume(bidCumulative, askCumulative, H, L);		
 
 		dictAsk.Clear();
 		dictBid.Clear();

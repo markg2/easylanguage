@@ -25,7 +25,7 @@ var:
 	Dictionary dictAsk(null),
 	IntrabarPersist int bidCumulative(0),
 	IntrabarPersist int askCumulative(0),
-	IntrabarPersist int pocIndex(1),
+	IntrabarPersist string pocStrike("0.0"),
 	IntrabarPersist int bidImbalanceCount(0),
 	IntrabarPersist int askImbalanceCount(0)
 	; 
@@ -93,8 +93,7 @@ var: 	string keyPrice, string calcValue,
 		int bidCount, int askCount, int highestCount,
 		int x, int bidIndex, int askIndex,
 		int pocVolHigh,
-		int pocVolTemp,
-		int counterAscending;
+		int pocVolTemp;
 
 Begin
 	bidCount = dictBid.Count;
@@ -102,7 +101,6 @@ Begin
 	highestCount = askCount;
 	pocVolHigh = 0;
 	pocVolTemp = 0;
-	counterAscending = 1;
 	bidImbalanceCount = 0;
 	askImbalanceCount = 0;
 	
@@ -132,13 +130,12 @@ Begin
 		// point of control
 		pocVolTemp = Strtonum(calcValue) + Strtonum(calcValue2);
 		if pocVolTemp > pocVolHigh then Begin
-		 	pocIndex = counterAscending;
+		 	pocStrike = keyPrice;
 	 		pocVolHigh = pocVolTemp;
 	 		pocVolTemp = 0;
 		end;
 
 		x = x - 1;
-		counterAscending = counterAscending + 1;
 	end;
 	
 	// display point of control
@@ -179,16 +176,16 @@ end;
 
 
 Method void plotVolume(int bidC, int askC, double hStrike, double lStrike)
-var: string imbalances;
+var: string imbalances, string display;
 Begin
 	imbalances = numtostr(bidImbalanceCount, 0) + "x" + numtostr(askImbalanceCount, 0);
-
+	display = imbalances + ": " + pocStrike;
 	if bidC > askC then begin
 		tBid = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), "-" + numtostr(bidC - askC, 0));
 		tBid.Color = Color.Red;
 		tBid.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(tBid);	// draws the text on the chart
-		tAsk =  TextLabel.Create(BNPoint.Create(BarNumber, hStrike), imbalances);
+		tAsk =  TextLabel.Create(BNPoint.Create(BarNumber, hStrike), display);
 		tAsk.Color = Color.Red;
 		tAsk.Persist = true;
 		DrawingObjects.Add(tAsk);
@@ -199,7 +196,7 @@ Begin
 		tAsk.Color = Color.LightBlue;
 		tAsk.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(tAsk);	// draws the text on the chart
-		tBid =  TextLabel.Create(BNPoint.Create(BarNumber, lStrike), imbalances);
+		tBid =  TextLabel.Create(BNPoint.Create(BarNumber, lStrike), display);
 		tBid.Color = Color.LightBlue;
 		tBid.Persist = true;
 		DrawingObjects.Add(tBid);
@@ -217,6 +214,7 @@ begin
 		dictBid.Clear();
 		askCumulative = 0;
 		bidCumulative = 0;
+		pocStrike = "0.0";
 	end;
 end;
 

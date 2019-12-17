@@ -21,9 +21,9 @@ var: TimeAndSalesProvider ts1(NULL),
 	Dictionary dictAsk(null),
 	IntrabarPersist int bidCumulative(0),
 	IntrabarPersist int askCumulative(0),
-	IntrabarPersist int pocVolHigh(0),
 	IntrabarPersist int pocIndex(1); 
 	
+
 
 
 
@@ -117,12 +117,14 @@ var: 		DataGridViewRow row, string keyPrice, string calcValue,
 		string calcValue2,
 		int bidCount, int askCount, int highestCount,
 		int x, int bidIndex, int askIndex,
+		int pocVolHigh,
 		int pocVolTemp;
 
 Begin
 	bidCount = dictBid.Count;
 	askCount = dictAsk.Count;
 	highestCount = askCount;
+	pocVolHigh = 0;
 	pocVolTemp = 0;
 	
 	If bidCount > askCount Then highestCount = bidCount;
@@ -241,7 +243,6 @@ begin
 					process(args.Data.Price, 0, dictBid,  TimeAndSalesItemTickType.Ask);
 				end;
 				DataGridView1.Rows.Clear();	
-				pocVolHigh = 0;  // TODO FUTURE this is a hack to make it work better
 				showAll(dictBid, dictAsk);
 			end;
 		end
@@ -285,7 +286,6 @@ begin
 		dictBid.Clear();
 		askCumulative = 0;
 		bidCumulative = 0;
-		pocVolHigh = 0;
 		pocIndex = 1;
 
 	end;
@@ -302,7 +302,7 @@ begin
 		DataGridView1 = new elsystem.windows.forms.DataGridView();
 		Label1 = elsystem.windows.forms.Label.Create("bid/ask VOL", 300, 20);
 		PanelHeader = elsystem.windows.forms.Panel.Create(400, 20);
-		PanelBody = elsystem.windows.forms.Panel.Create(400, 600);
+		PanelBody = elsystem.windows.forms.Panel.Create(400, 800);
 		PanelFooter = elsystem.windows.forms.Panel.Create(400, 20);
 
 		PanelHeader.AddControl(Label1);		

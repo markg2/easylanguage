@@ -179,9 +179,12 @@ Method void plotVolume(int bidC, int askC, double hStrike, double lStrike)
 var: string imbalances, string display;
 Begin
 	imbalances = numtostr(bidImbalanceCount, 0) + "x" + numtostr(askImbalanceCount, 0);
-	display = imbalances + ": " + pocStrike;
+//	display = imbalances + ": " + pocStrike;
+	display = imbalances;
+
 	if bidC > askC then begin
-		tBid = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), "-" + numtostr(bidC - askC, 0));
+//		tBid = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), "-" + numtostr(bidC - askC, 0));
+		tBid = TextLabel.Create(BNPoint.Create(BarNumber, lStrike), "@" + pocStrike);
 		tBid.Color = Color.Red;
 		tBid.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(tBid);	// draws the text on the chart
@@ -192,7 +195,8 @@ Begin
 		
 	end
 	else Begin
-		tAsk = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(askC - bidC, 0));
+//		tAsk = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), numtostr(askC - bidC, 0));
+		tAsk = TextLabel.Create(BNPoint.Create(BarNumber, hStrike), "@" + pocStrike);
 		tAsk.Color = Color.LightBlue;
 		tAsk.Persist = true;		// persist keeps the text label on the chart between tick updates
 		DrawingObjects.Add(tAsk);	// draws the text on the chart
